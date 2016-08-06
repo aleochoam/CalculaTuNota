@@ -1,0 +1,8 @@
+1. Instalar python 3.5.2 de la pagina
+2. Instalar pip (buscar en google)
+3. Instalar virtualenv desde pip (pip install virtualenv)
+4. bajar el repositorio
+5. crear un virtualenv en la carpeta del proyecto, al mismo nivel de src
+   virtualenv env -p python3.5
+6. source env/bin/activate
+7. python -m pip install -r requeriments.txt
