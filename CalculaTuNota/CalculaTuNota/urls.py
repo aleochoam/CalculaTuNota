@@ -20,4 +20,3 @@ urlpatterns = [
     url(r'^calc/', include('calc.urls')),
     url(r'^admin/', admin.site.urls),
 ]
-
