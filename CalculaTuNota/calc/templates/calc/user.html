@@ -1,0 +1,11 @@
+<p>Esta es su lista de notas:</p>
+{% if grades %}
+    <ul>
+        {% for grade in grades %}
+            <li><a>{{ grade }}%</a></li>
+        {% endfor %}
+        <li><a>Su promedio está en {{ average}} </a></li>
+    </ul>
+{% else %}
+    <p>No hay notas para mostrar</p>
+{% endif %}
