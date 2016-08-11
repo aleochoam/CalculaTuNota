@@ -1,0 +1,12 @@
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+
+<form action="createAccount_submit" method="post">
+    {% csrf_token %}
+    <label>Ingrese Usuario</label> <input type="text" name="username" id="username">
+    <p></p>
+    <label>Ingrese Contraseña</label> <input type="password" name="password" id="password">
+    <p></p>
+    <label>Repita la Contraseña</label> <input type="password" name="password2" id="password2">
+    <input type="submit" name="login" value="login">
+</form>

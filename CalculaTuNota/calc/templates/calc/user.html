@@ -1,11 +1,10 @@
-<p>Esta es su lista de notas:</p>
-{% if grades %}
+<p>Estas son las materias en las que está inscrito {{ username }}</p>
+{% if subjects %}
     <ul>
-        {% for grade in grades %}
-            <li><a>{{ grade }}%</a></li>
+        {% for subject in subjects %}
+            <li><a href="/calc/{{ username }}/{{ subject }}">{{ subject }}</a></li>
         {% endfor %}
-        <li><a>Su promedio está en {{ average}} </a></li>
     </ul>
 {% else %}
-    <p>No hay notas para mostrar</p>
+    <p>No hay materias para mostrar</p>
 {% endif %}
