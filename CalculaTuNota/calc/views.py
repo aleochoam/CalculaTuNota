@@ -11,8 +11,8 @@ def createAccount(request):
     return render(request, "calc/createaccount.html")
 
 def createAccount_submit(request):
-    username = request.POST["username"]
-    password = request.POST["password"]
+    username  = request.POST["username"]
+    password  = request.POST["password"]
     password2 = request.POST["password2"]
 
     if password2 != password:
@@ -57,7 +57,7 @@ def all_users(request):
 def user(request, user):
     subjects = get_list_or_404(subject_user, username=user)
     subjects = [s.subject for s in subjects]
-    context = {
+    context  = {
         "username" : user,
         "subjects" : [s.code for s in subjects]
     }
@@ -65,38 +65,65 @@ def user(request, user):
 
 def grades(request, user, subject):
     try:
-        #user = User.objects.get(username=user)
-        grades = Grade.objects.filter(username=user, subject=subject)
-        average = getAverage(grades)
-        faltante = getFaltante()
-        context = {
+        gradesDB    = Grade.objects.filter(username=user, subject=subject)
+        notas       = [n.grade for n in gradesDB]
+        porcentajes = [n.percentage for n in gradesDB]
+
+        average     = getPromedio(notas, porcentajes)
+        faltante    = getFaltante(notas, porcentajes)
+        context     = {
             "username": user,
-            "grades"  : grades,
+            "subject" : subject,
+            "grades"  : gradesDB,
             "average" : average,
+            "faltante": faltante,
+            "acum"    : 100 - sum(porcentajes)
         }
         return render(request, "calc/grades.html", context)
     except User.DoesNotExist:
         raise Http404("User doesn't exist")
 
+def addGrades(request, user, subject):
+    return render(request, "calc/addGrades.html")
+
+# def addGrades_submit(request,user,subject):
+
+
+
 def createUser(username, password):
     u = User(username=username, password=password)
     u.save()
 
-"""
-Funcion para calcular el promedio
-"""
-def getAverage(grades):
-    sum = 0
-    print(grades)
-    for grade in grades:
-        grade = str(grade).split();
-        print(grade)
-        sum += float(grade[0])*float(grade[1])/100
 
-    return sum;
+def getPromedio(notas, porcentajes):
+    porcentajeNotas = []
+    porcentajeTotal = sum(porcentajes)
+
+    for porcentaje in porcentajes:
+        porcentajeDef = porcentaje/porcentajeTotal*100
+        porcentajeNotas.append(porcentajeDef)
+
+    final = 0
+    for i in range(len(notas)):
+        final += notas[i] * (porcentajeNotas[i]/100)
+    return final
 
 """
 Funcion que calcula la nota que necesita para ganar
 """
-def getFaltante():
-    pass
+def getFaltante(notas, porcentaje):
+    acum = 0
+    percent = 0
+    for i in range(len(notas)):
+        temp = notas[i] * (porcentaje[i]/100)
+        acum = acum + temp
+        percent = percent + porcentaje[i]
+    if (percent == 100):
+        return acum
+    elif (percent < 100):
+        percent1 = (100 - percent)/100
+        acum = 3 - acum
+        final = acum/percent1
+        return final
+    else:
+        return "ERROR!"

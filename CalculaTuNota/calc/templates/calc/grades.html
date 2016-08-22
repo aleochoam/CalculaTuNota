@@ -1,11 +1,17 @@
-<p>Esta es su lista de notas:</p>
+<p>Esta es su lista de notas para la materia {{ subject }} :</p>
 {% if grades %}
     <ul>
         {% for grade in grades %}
             <li><a>{{ grade }}%</a></li>
         {% endfor %}
-        <li><a>Su promedio está en {{ average}} </a></li>
+        <li>Su promedio está en {{ average }}</li>
+        <li>Necesita {{ faltante }} en el {{ acum }} faltante</li>
     </ul>
 {% else %}
     <p>No hay notas para mostrar</p>
 {% endif %}
+
+<form action="{{ subject }}/addGrades" method="post">
+    {% csrf_token %}
+    <input type="submit" name="addGrades" value="Añadir notas">
+</form>

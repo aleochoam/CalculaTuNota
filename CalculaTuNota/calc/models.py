@@ -20,7 +20,7 @@ class Subject(models.Model):
 @python_2_unicode_compatible
 class subject_user(models.Model):
     username = models.ForeignKey(User, on_delete=models.CASCADE)
-    subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
+    subject  = models.ForeignKey(Subject, on_delete=models.CASCADE)
 
     def __str__(self):
         return str(self.username) +" "+ str(self.subject)
