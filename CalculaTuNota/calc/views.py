@@ -84,10 +84,23 @@ def grades(request, user, subject):
         raise Http404("User doesn't exist")
 
 def addGrades(request, user, subject):
-    return render(request, "calc/addGrades.html")
+    return render(request, "calc/agregarNota.html")
 
-# def addGrades_submit(request,user,subject):
+def addGrades_submit(request,user,subject):
+    print("DEBUGGING " + request.POST["grade"])
 
+    userO    = User.objects.get(username = user)
+    subjectO = Subject.objects.get(code = subject)
+
+    grade = Grade(
+        username   = userO,
+        subject    = subjectO,
+        grade      = float(request.POST["grade"]),
+        percentage = float(request.POST["percentage"]))
+
+    grade.save()
+
+    return redirect("/calc/"+user+"/"+subject)
 
 
 def createUser(username, password):

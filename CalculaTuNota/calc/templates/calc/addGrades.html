@@ -4,43 +4,48 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
 <script type="text/javascript">
-	var contNota = 1;
+	var contGrade = 1;
+	var arrayNotas = [];
+	var arrayPercent = [];
+	var csrfToken = $('input[name="csrfmiddlewaretoken"]').val();
 	function send(){
+		for (var i = 0; i < contGrade; i++) {
+			arrayNotas[i] = document.getElementById('grade'+i).value;
+			arrayPercent[i] = document.getElementById('percent'+i).value;
+		}
 		$.ajax({
 		    type: 'post',
-		    url: 'codigoDeOchoa.py', //Coloca el nombre del archivo aca
-		    data: {}
+		    url: "http://127.0.0.1:8000/calc/aleochoam/ST0242", //Coloca el nombre del archivo aca
+		    csrfmiddlewaretoken: csrfToken,
+		    data: {arrayNotas:arrayNotas,arrayPercent:arrayPercent}
 		    }).done(function(data){
-		    //var msg = JSON.parse(data);
 		  	console.log('success');
 		});
 	}
 	function moreNotes(){
-		console.log('hello');
 		$('input').remove(".but");
-		htmlInsert = '<br>Nota '+(contNota+1)+'<br>';
-		htmlInsert += '<input type="text" style="width:50px;" id="nota'+contNota+'" placeholder="5.0">';
-		htmlInsert += '<input type="text" style="width:50px;" id="percent'+contNota+'" placeholder="20%">';
+		htmlInsert = '<br>Nota '+(contGrade+1)+'<br>';
+		htmlInsert += '<input type="text" style="width:50px;" id="nota'+contGrade+'" placeholder="5.0">';
+		htmlInsert += '<input type="text" style="width:50px;" id="percent'+contGrade+'" placeholder="20%">';
 		htmlInsert += '<input type="button" value="+" onclick="moreNotes()"></input>';
 		htmlInsert += '<br>'
 		htmlInsert += '<input type="submit" class="but" value="Send">';
 		htmlInsert += '<input type="reset" class="but" value="Reset">';
 		$('#formNotas').append(htmlInsert);
-
-		contNota++;
+		contGrade++;
 	}
-
 </script>
 </head>
 <body>
 
-	<form id="formNotas" action="javascript:send();" method="post" enctype="text/plain">Nota 1:<br>
+	<form id="formNotas" action="javascript:send();" method="post" enctype="text/plain">
+	Nota 1:<br>
 		<input type="text" style="width:50px;" id="grade0" placeholder="5.0">
 		<input type="text" style="width:50px;" id="percent0" placeholder="20%">
 		<input type="button" value="+" onclick="moreNotes()"></input>
 		<br>
-		<input type="submit" class="but" value="Ingresar">
-		<input type="reset" class="but" value="Borrar">
+		<input type="submit" class="but" value="Send">
+		<input type="reset" class="but" value="Reset">
 	</form>
 </body>
 </html>
