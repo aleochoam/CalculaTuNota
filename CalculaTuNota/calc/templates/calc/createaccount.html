@@ -1,7 +1,7 @@
 {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
 
 
-<form action="createAccount_submit" method="post">
+<form action="createAccount_submit/" method="post">
     {% csrf_token %}
     <label>Ingrese Usuario</label> <input type="text" name="username" id="username">
     <p></p>

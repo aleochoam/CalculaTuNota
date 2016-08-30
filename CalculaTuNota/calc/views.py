@@ -48,14 +48,15 @@ def login_submit(request):
 
 def all_users(request):
     users = User.objects.all()
-    #output = ', '.join([u.username for u in users])
     context = {
         "users": users,
     }
     return render(request, "calc/all_users.html", context)
 
 def user(request, user):
-    subjects = get_list_or_404(subject_user, username=user)
+    subjects = subject_user.objects.filter(username = user)
+
+    # subjects = get_list_or_404(subject_user, username=user)
     subjects = [s.subject for s in subjects]
     context  = {
         "username" : user,
@@ -87,7 +88,6 @@ def addGrades(request, user, subject):
     return render(request, "calc/agregarNota.html")
 
 def addGrades_submit(request,user,subject):
-    print("DEBUGGING " + request.POST["grade"])
 
     userO    = User.objects.get(username = user)
     subjectO = Subject.objects.get(code = subject)
@@ -101,6 +101,24 @@ def addGrades_submit(request,user,subject):
     grade.save()
 
     return redirect("/calc/"+user+"/"+subject)
+
+def addSubject(request, user):
+    return render(request, "calc/addSubject.html")
+
+def addSubject_submit(request, user):
+    subject = request.POST["subject"]
+    print("1" + subject + " " + user)
+    try:
+        subject = get_object_or_404(Subject, code = subject)
+        user = get_object_or_404(User, username = user)
+        print ("2" + subject + " " + user)
+        newSubject = subject_user(username = user, subject = subject)
+        newSubject.save()
+        return redirect("/calc/"+user)
+
+    except Http404:
+        return render(request, "calc/addSubject.html", {
+            "error_message": "El codigo de la materia no existe en la DB"})
 
 
 def createUser(username, password):

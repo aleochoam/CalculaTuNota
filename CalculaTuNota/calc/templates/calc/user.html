@@ -2,9 +2,14 @@
 {% if subjects %}
     <ul>
         {% for subject in subjects %}
-            <li><a href="/calc/{{ username }}/{{ subject }}">{{ subject }}</a></li>
+            <li><a href="/calc/{{ username }}/{{ subject }}/">{{ subject }}</a></li>
         {% endfor %}
     </ul>
 {% else %}
     <p>No hay materias para mostrar</p>
 {% endif %}
+
+<form action="addSubject/" method="post">
+    {% csrf_token %}
+    <input type="submit" name="addGrades" value="Añadir Materia">
+</form>
