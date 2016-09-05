@@ -1,6 +1,6 @@
 {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
 
-<form action="addSubject_submit/" method="post">
+<form action="addSubject_submit" method="post">
     {% csrf_token %}
     <input type="text" id="subject" name="subject" placeholder="ST0245">
     <br>

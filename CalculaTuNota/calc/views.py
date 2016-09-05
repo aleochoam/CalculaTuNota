@@ -1,7 +1,15 @@
+import json
+
 from django.http import HttpResponse, Http404
 from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404
 from django.template import loader
 
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
+from rest_framework import status
+
+from .serializers import UserSerializer, GradeSerializer, SubjectSerializer, SubjectUserSerializer
 from .models import User, Grade, Subject, subject_user
 
 def index(request):
@@ -119,6 +127,57 @@ def addSubject_submit(request, user):
     except Http404:
         return render(request, "calc/addSubject.html", {
             "error_message": "El codigo de la materia no existe en la DB"})
+
+
+"""
+-------------------------------------------
+             REST API
+-------------------------------------------
+"""
+@api_view(['GET'])
+def notaFaltante(request, user, subject):
+
+    if request.method == 'GET':
+        gradesDB    = Grade.objects.filter(username=user, subject=subject)
+        notas       = [n.grade for n in gradesDB]
+        porcentajes = [n.percentage for n in gradesDB]
+
+        average     = getPromedio(notas, porcentajes)
+        faltante    = getFaltante(notas, porcentajes)
+
+        return Response({"faltante": faltante, "promedio": average})
+
+class GradeList(APIView):
+    def get(self, request, user, subject):
+        gradesDB = Grade.objects.filter(username=user, subject=subject)
+        serializer = GradeSerializer(gradesDB, many=True)
+        print ("DEBUG " + str(serializer.data))
+        return Response(serializer.data)
+
+    # Por Probar
+    def post(self, request, format=None):
+        serializer = GradeSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+"""
+Mostrar Todas las materias en las que está inscrito, o inscribir una nueva
+"""
+class UserSubjectList(APIView):
+
+    def get(self, request, user, format=None):
+        subjects   = subject_user.objects.filter(username = user)
+        serializer = SubjectUserSerializer(subjects, many = True)
+        return Response(serializer.data)
+
+    def post(self, request, format=None):
+        serializer = SubjectUserSerializer(data = request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 def createUser(username, password):

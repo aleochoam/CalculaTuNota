@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
+
 from calc import views
 
 urlpatterns = [
@@ -22,3 +23,4 @@ urlpatterns = [
     url(r'^calc/', include('calc.urls')),
     url(r'^admin/', admin.site.urls),
 ]
+
