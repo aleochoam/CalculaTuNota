@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 """
 
 import os
+from . import config
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -78,10 +79,10 @@ WSGI_APPLICATION = 'CalculaTuNota.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'mydatabase',
-        'USER': 'root',
-        'PASSWORD': 'supera8',
-        'HOST': 'localhost',
+        'NAME': config.DBNAME,
+        'USER': config.DBUSER,
+        'PASSWORD': config.DBPASS,
+        'HOST': config.DBHOST,
         'PORT': '',
     }
 }

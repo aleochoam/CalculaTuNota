@@ -4,7 +4,7 @@ from . import views
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),
-    url(r'^api/(?P<user>.+)/(?P<subject>.+)/options/$', views.notaFaltante),
+    url(r'^api/(?P<user>.+)/(?P<subject>.+)/extra/$', views.notaFaltante),
     url(r'^api/(?P<user>.+)/(?P<subject>.+)/$', views.GradeList.as_view()),
     url(r'^api/(?P<user>.+)/$', views.UserSubjectList.as_view()),
     # url(r'^createAccount_submit/$', views.createAccount_submit, name='createAccount_submit'),
