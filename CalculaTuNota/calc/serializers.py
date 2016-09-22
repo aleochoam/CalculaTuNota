@@ -1,10 +1,12 @@
 from rest_framework import serializers
-from calc.models import User, Subject, Grade, subject_user
+from calc.models import Subject, Grade, subject_user
 
+"""
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = '__all__'
+"""
 
 class SubjectSerializer(serializers.ModelSerializer):
     class Meta:

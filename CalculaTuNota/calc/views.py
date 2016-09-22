@@ -3,76 +3,49 @@ import json
 from django.http import HttpResponse, Http404
 from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404
 from django.template import loader
+from django.contrib.auth import authenticate, login, logout
+from django.views.generic import View
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
 
-from .serializers import UserSerializer, GradeSerializer, SubjectSerializer, SubjectUserSerializer
-from .models import User, Grade, Subject, subject_user
+from .serializers import GradeSerializer, SubjectSerializer, SubjectUserSerializer
+from .models import Grade, Subject, subject_user
+from .forms import UserForm
 
 def index(request):
-    return render(request, "calc/index.html")
-
-def createAccount(request):
-    return render(request, "calc/createaccount.html")
-
-def createAccount_submit(request):
-    username  = request.POST["username"]
-    password  = request.POST["password"]
-    password2 = request.POST["password2"]
-
-    if password2 != password:
-        return render(request, "calc/createaccount.html", {
-            "error_message" : "Las contraseñas no coinciden"})
+    if request.user.is_authenticated:
+        return redirect("user")
     else:
-        try:
-            user = User.objects.get(username=username)
-            return render(request, "calc/createaccount.html", {
-                "error_message": "El Usuario ya existe"})
-
-        except User.DoesNotExist:
-            createUser(username, password);
-            return redirect("/calc/"+username)
-
-def login(request):
-    return render(request, "calc/login.html")
-
-def login_submit(request):
-    username = request.POST["username"]
-    password = request.POST["password"]
-
-    try:
-        user = get_object_or_404(User, username=username)
-        if user.password == password:
-            return redirect("/calc/"+username)
-        else:
-            raise Exception("Contraseña equivocada")
-    except (User.DoesNotExist, Exception):
-        return render(request, "calc/login.html", {
-            "error_message": "Usuario o contraseña invalido"})
+        return render(request, "calc/index.html")
 
 
 def all_users(request):
     users = User.objects.all()
-    context = {
-        "users": users,
-    }
-    return render(request, "calc/all_users.html", context)
+    return render(request, "calc/all_users.html", {"users": users})
 
-def user(request, user):
-    subjects = subject_user.objects.filter(username = user)
+def logout_view(request):
+    logout(request)
+    return redirect("/calc")
 
-    # subjects = get_list_or_404(subject_user, username=user)
+def user(request):
+    if not request.user.is_authenticated:
+        return redirect("/calc/login")
+
+    print(request.user.username)
+    subjects = subject_user.objects.filter(username_id = request.user.pk)
+    #subjects = get_list_or_404(subject_user, username=user)
+
     subjects = [s.subject for s in subjects]
     context  = {
-        "username" : user,
+        "username" : request.user.username,
         "subjects" : [s.code for s in subjects]
     }
     return render(request, "calc/user.html", context)
 
-def grades(request, user, subject):
+def grades(request):
     try:
         gradesDB    = Grade.objects.filter(username=user, subject=subject)
         notas       = [n.grade for n in gradesDB]
@@ -128,6 +101,59 @@ def addSubject_submit(request, user):
         return render(request, "calc/addSubject.html", {
             "error_message": "El codigo de la materia no existe en la DB"})
 
+
+class UserRegisterView(View):
+    form_class = UserForm
+    template_name = "calc/registration_form.html"
+
+    def get(self, request):
+        form = self. form_class(None)
+        return render(request, self.template_name, {"form": form})
+
+    def post(self, request):
+        form = self. form_class(request.POST)
+
+        if form.is_valid():
+            user = form.save(commit=False)
+
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            user.set_password(password)
+            user.save()
+
+            user = authenticate(username = username, password = password)
+            if user is not None:
+                if user.is_active:
+                    login(request, user)
+
+                    #redirect a lista de notas
+                    return redirect ("/calc/user")
+
+        return render(request, self.template_name,
+            {"form": form, "error_message": "error"})
+
+class UserLogView(View):
+    form_class = UserForm
+    template_name = "calc/registration_form.html"
+
+    def get(self, request):
+        form = self. form_class(None)
+        return render(request, self.template_name, {"form": form})
+
+    def post(self, request):
+        username = request.POST["username"]
+        password = request.POST["password"]
+
+        user = authenticate(username = username, password = password)
+        if user is not None:
+            if user.is_active:
+                login(request, user)
+
+                #redirect a lista de notas
+                return redirect ("/calc/user")
+
+        return render(request, self.template_name,
+                    {"form": form, "error_message": "error autenticando"})
 
 """
 -------------------------------------------
