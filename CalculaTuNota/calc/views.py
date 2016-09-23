@@ -34,8 +34,7 @@ def user(request):
     if not request.user.is_authenticated:
         return redirect("/calc/login")
 
-    print(request.user.username)
-    subjects = subject_user.objects.filter(username_id = request.user.pk)
+    subjects = subject_user.objects.filter(user = request.user.pk)
     #subjects = get_list_or_404(subject_user, username=user)
 
     subjects = [s.subject for s in subjects]
@@ -45,25 +44,25 @@ def user(request):
     }
     return render(request, "calc/user.html", context)
 
-def grades(request):
-    try:
-        gradesDB    = Grade.objects.filter(username=user, subject=subject)
-        notas       = [n.grade for n in gradesDB]
-        porcentajes = [n.percentage for n in gradesDB]
+def grades(request, subject):
+   # try:
+    gradesDB    = Grade.objects.filter(username_id=request.user.pk, subject=subject)
+    notas       = [n.grade for n in gradesDB]
+    porcentajes = [n.percentage for n in gradesDB]
 
-        average     = getPromedio(notas, porcentajes)
-        faltante    = getFaltante(notas, porcentajes)
-        context     = {
-            "username": user,
-            "subject" : subject,
-            "grades"  : gradesDB,
-            "average" : average,
-            "faltante": faltante,
-            "acum"    : 100 - sum(porcentajes)
-        }
-        return render(request, "calc/grades.html", context)
-    except User.DoesNotExist:
-        raise Http404("User doesn't exist")
+    average     = getPromedio(notas, porcentajes)
+    faltante    = getFaltante(notas, porcentajes)
+    context     = {
+        "username": request.user.username,
+        "subject" : subject,
+        "grades"  : gradesDB,
+        "average" : average,
+        "faltante": faltante,
+        "acum"    : 100 - sum(porcentajes)
+    }
+    return render(request, "calc/grades.html", context)
+    #except Exception:
+     #   return render(request, "calc/grades.html", )
 
 def addGrades(request, user, subject):
     return render(request, "calc/agregarNota.html")

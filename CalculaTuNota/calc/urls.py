@@ -11,6 +11,8 @@ urlpatterns = [
     url(r'^createAccount/$', views.UserRegisterView.as_view(), name="createAccount"),
     url(r'^login/$', views.UserLogView.as_view(), name="login"),
     url(r'^logout/$', views.logout_view, name="logout"),
+
+    url(r'^user/(?P<subject>.+)/$', views.grades, name='grades'),
     url(r'^user/$', views.user, name="user"),
 
     # url(r'^createAccount_submit/$', views.createAccount_submit, name='createAccount_submit'),
@@ -22,6 +24,5 @@ urlpatterns = [
     # url(r'^(?P<user>.+)/addSubject/$', views.addSubject, name='addSubject'),
     # url(r'^(?P<user>.+)/(?P<subject>.+)/addGrades_submit/$', views.addGrades_submit, name='addGrades'),
     # url(r'^(?P<user>.+)/(?P<subject>.+)/addGrades/$', views.addGrades, name='addGrades'),
-    # url(r'^(?P<user>.+)/(?P<subject>.+)/$', views.grades, name='grades'),
     # #url(r'^(?P<user>.+)/$', views.user, name='user'),
 ]

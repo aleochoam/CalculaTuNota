@@ -13,18 +13,18 @@ class Subject(models.Model):
 
 @python_2_unicode_compatible
 class subject_user(models.Model):
-    subject  = models.ForeignKey(Subject, on_delete=models.CASCADE)
-    username_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    subject     = models.ForeignKey(Subject, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return str(self.username_id) +" "+ str(self.subject)
 
 @python_2_unicode_compatible
 class Grade(models.Model):
-    username_id   = models.ForeignKey(User, on_delete=models.CASCADE)
-    subject    = models.ForeignKey(Subject, on_delete=models.CASCADE)
-    grade      = models.FloatField()
-    percentage = models.FloatField()
+    subject     = models.ForeignKey(Subject, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    grade       = models.FloatField()
+    percentage  = models.FloatField()
 
     def __str__(self):
         return str(self.grade) + " " + str(self.percentage)
