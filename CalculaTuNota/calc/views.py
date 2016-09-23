@@ -4,6 +4,7 @@ from django.http import HttpResponse, Http404
 from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404
 from django.template import loader
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
 from django.views.generic import View
 
 from rest_framework.views import APIView
@@ -61,23 +62,23 @@ def grades(request, subject):
     }
     return render(request, "calc/grades.html", context)
 
-def addGrades(request, user, subject):
-    return render(request, "calc/agregarNota.html")
+def addGrades(request, subject):
 
-def addGrades_submit(request,user,subject):
+    if request.method == "GET":
+        return render(request, "calc/agregarNota.html")
 
-    userO    = User.objects.get(username = user)
-    subjectO = Subject.objects.get(code = subject)
+    if request.method == "POST":
+        userObj    = User.objects.get(username = request.user.username)
+        subjectObj = Subject.objects.get(code = subject)
 
-    grade = Grade(
-        username   = userO,
-        subject    = subjectO,
-        grade      = float(request.POST["grade"]),
-        percentage = float(request.POST["percentage"]))
+        grade = Grade(
+            user   = userObj,
+            subject    = subjectObj,
+            grade      = float(request.POST["grade"]),
+            percentage = float(request.POST["percentage"]))
 
-    grade.save()
-
-    return redirect("/calc/"+user+"/"+subject)
+        grade.save()
+        return redirect("/calc/user/" + subject)
 
 def addSubject(request, user):
     return render(request, "calc/addSubject.html")
@@ -236,6 +237,9 @@ def getFaltante(notas, porcentaje):
         percent1 = (100 - percent)/100
         acum = 3 - acum
         final = acum/percent1
-        return final
+        if final <= 0:
+            return 0;
+        else:
+            return final
     else:
         return "ERROR!"

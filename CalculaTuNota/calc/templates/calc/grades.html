@@ -11,7 +11,7 @@
     <p>No hay notas para mostrar</p>
 {% endif %}
 
-<form action="{{ subject }}/addGrades/" method="post">
-    {% csrf_token %}
-    <input type="submit" name="addGrades" value="Añadir notas">
+
+<form action="addGrades/" method="get">
+    <input type="submit" value="Añadir notas">
 </form>
