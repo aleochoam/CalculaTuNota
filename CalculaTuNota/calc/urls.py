@@ -12,7 +12,7 @@ urlpatterns = [
     url(r'^login/$', views.UserLogView.as_view(), name="login"),
     url(r'^logout/$', views.logout_view, name="logout"),
 
-    url(r'^user/(?P<subject>.+)/$', views.grades, name='grades'),
+    #url(r'^user/(?P<subject>.+)/$', views.grades, name='grades'),
     url(r'^user/$', views.user, name="user"),
 
     # url(r'^createAccount_submit/$', views.createAccount_submit, name='createAccount_submit'),

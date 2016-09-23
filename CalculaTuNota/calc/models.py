@@ -17,7 +17,7 @@ class subject_user(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
-        return str(self.username_id) +" "+ str(self.subject)
+        return str(self.user) +" "+ str(self.subject)
 
 @python_2_unicode_compatible
 class Grade(models.Model):

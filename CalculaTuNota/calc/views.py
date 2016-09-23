@@ -35,7 +35,7 @@ def user(request):
         return redirect("/calc/login")
 
     subjects = subject_user.objects.filter(user = request.user.pk)
-    #subjects = get_list_or_404(subject_user, username=user)
+    #subjects = get_list_or_404(subject_user, user=request.user.pk)
 
     subjects = [s.subject for s in subjects]
     context  = {
