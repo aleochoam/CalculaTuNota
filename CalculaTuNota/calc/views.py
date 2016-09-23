@@ -45,8 +45,7 @@ def user(request):
     return render(request, "calc/user.html", context)
 
 def grades(request, subject):
-   # try:
-    gradesDB    = Grade.objects.filter(username_id=request.user.pk, subject=subject)
+    gradesDB    = Grade.objects.filter(user=request.user.pk, subject=subject)
     notas       = [n.grade for n in gradesDB]
     porcentajes = [n.percentage for n in gradesDB]
 
@@ -61,8 +60,6 @@ def grades(request, subject):
         "acum"    : 100 - sum(porcentajes)
     }
     return render(request, "calc/grades.html", context)
-    #except Exception:
-     #   return render(request, "calc/grades.html", )
 
 def addGrades(request, user, subject):
     return render(request, "calc/agregarNota.html")
