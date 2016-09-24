@@ -19,5 +19,4 @@ urlpatterns = [
     # url(r'^users/$', views.all_users, name='all_users'),
     # url(r'^(?P<user>.+)/addSubject_submit/$', views.addSubject_submit, name='addSubject_submit'),
     # url(r'^(?P<user>.+)/addSubject/$', views.addSubject, name='addSubject'),
-    # url(r'^(?P<user>.+)/(?P<subject>.+)/addGrades_submit/$', views.addGrades_submit, name='addGrades'),
 ]
