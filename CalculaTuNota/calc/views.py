@@ -150,7 +150,7 @@ class UserLogView(View):
                 return redirect ("/calc/user")
 
         return render(request, self.template_name,
-                    {"form": form, "error_message": "error autenticando"})
+                    {"form": self.form_class, "error_message": "error autenticando"})
 
 """
 -------------------------------------------
