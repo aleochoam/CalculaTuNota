@@ -78,7 +78,10 @@ WSGI_APPLICATION = 'CalculaTuNota.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
+        'OPTIONS': {
+            'init_command' : 'SET storage_engine=ndbcluster'
+        },
+        'ENGINE': 'mysqlndb',
         'NAME': config.DBNAME,
         'USER': config.DBUSER,
         'PASSWORD': config.DBPASS,
